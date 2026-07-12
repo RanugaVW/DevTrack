@@ -39,6 +39,31 @@ const TaskManager = {
 	},
 };
 
+const ThemeManager = {
+	theme: localStorage.getItem('devtrack-theme') || 'dark',
+	buttonElement: document.getElementById('theme-btn'),
+
+	init() {
+		document.body.classList.toggle('light-mode', this.theme === 'light');
+		this.updateButton();
+	},
+
+	toggle() {
+		this.theme = this.theme === 'light' ? 'dark' : 'light';
+		localStorage.setItem('devtrack-theme', this.theme);
+		document.body.classList.toggle('light-mode', this.theme === 'light');
+		this.updateButton();
+	},
+
+	updateButton() {
+		if (!this.buttonElement) {
+			return;
+		}
+
+		this.buttonElement.innerHTML = this.theme === 'light' ? '&#9728;&#65039;' : '&#127769;';
+	},
+};
+
 const TaskUI = {
 	listElement: document.getElementById('task-list'),
 	inputElement: document.getElementById('task-input'),
@@ -220,6 +245,14 @@ function updateBadge() {
 
 const todayDateElement = document.getElementById('today-date');
 
+const themeButton = document.getElementById('theme-btn');
+
+if (themeButton) {
+	themeButton.addEventListener('click', () => {
+		ThemeManager.toggle();
+	});
+}
+
 const timerStartButton = document.getElementById('timer-start-btn');
 const timerStopButton = document.getElementById('timer-stop-btn');
 const timerResetButton = document.getElementById('timer-reset-btn');
@@ -251,6 +284,7 @@ if (todayDateElement) {
 	});
 }
 
+ThemeManager.init();
 Timer.updateDisplay();
 TaskUI.bindEvents();
 TaskUI.render();
