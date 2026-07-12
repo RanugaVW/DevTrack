@@ -178,7 +178,7 @@ body {
 }
 
 .timer-controls button:hover {
-	background: rgba(56, 189, 248, 0.18);
+	background: rgba(255, 5, 1, 0.699);
 	color: var(--accent);
 }
 
