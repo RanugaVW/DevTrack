@@ -131,3 +131,4 @@ if (todayDateElement) {
 
 TaskUI.bindEvents();
 TaskUI.render();
+
