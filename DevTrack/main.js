@@ -39,6 +39,85 @@ const TaskManager = {
 	},
 };
 
+const TaskUI = {
+	listElement: document.getElementById('task-list'),
+	inputElement: document.getElementById('task-input'),
+	addButtonElement: document.getElementById('add-task-btn'),
+
+	render() {
+		if (!this.listElement) {
+			return;
+		}
+
+		this.listElement.innerHTML = '';
+
+		TaskManager.getAll().forEach((task) => {
+			const listItem = document.createElement('li');
+			listItem.className = 'task-item';
+
+			const checkbox = document.createElement('input');
+			checkbox.type = 'checkbox';
+			checkbox.checked = task.done;
+			checkbox.addEventListener('click', () => {
+				TaskManager.toggle(task.id);
+				TaskUI.render();
+			});
+
+			const text = document.createElement('span');
+			text.textContent = task.text;
+			text.className = 'task-text';
+
+			if (task.done) {
+				text.classList.add('done');
+			}
+
+			const deleteButton = document.createElement('button');
+			deleteButton.type = 'button';
+			deleteButton.textContent = 'Delete';
+			deleteButton.className = 'task-delete-btn';
+			deleteButton.addEventListener('click', () => {
+				TaskManager.delete(task.id);
+				TaskUI.render();
+			});
+
+			listItem.append(checkbox, text, deleteButton);
+			this.listElement.appendChild(listItem);
+		});
+	},
+
+	addTaskFromInput() {
+		if (!this.inputElement) {
+			return;
+		}
+
+		const text = this.inputElement.value.trim();
+
+		if (!text) {
+			return;
+		}
+
+		TaskManager.add(text);
+		this.inputElement.value = '';
+		this.render();
+	},
+
+	bindEvents() {
+		if (this.addButtonElement) {
+			this.addButtonElement.addEventListener('click', () => {
+				this.addTaskFromInput();
+			});
+		}
+
+		if (this.inputElement) {
+			this.inputElement.addEventListener('keydown', (event) => {
+				if (event.key === 'Enter') {
+					this.addTaskFromInput();
+				}
+			});
+		}
+	},
+};
+
 const todayDateElement = document.getElementById('today-date');
 
 if (todayDateElement) {
@@ -49,3 +128,6 @@ if (todayDateElement) {
 		day: 'numeric',
 	});
 }
+
+TaskUI.bindEvents();
+TaskUI.render();

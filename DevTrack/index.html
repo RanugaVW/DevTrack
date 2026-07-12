@@ -16,7 +16,12 @@
     </header>
     <main class="dashboard-grid">
       <section id="tasks-section" class="card" aria-label="Tasks">
-        <h2>Tasks</h2>
+        <h2>Today's Tasks</h2>
+        <div class="task-controls">
+          <input id='task-input' placeholder='Add a task...' />
+          <button id='add-task-btn'>Add</button>
+        </div>
+        <ul id='task-list'></ul>
       </section>
       <section id="timer-section" class="card" aria-label="Focus Timer">
         <h2>Focus Timer</h2>
