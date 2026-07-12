@@ -120,6 +120,85 @@ const TaskUI = {
 	},
 };
 
+const Timer = {
+	startTime: null,
+	running: false,
+	totalSeconds: 0,
+	interval: null,
+
+	start() {
+		if (this.running) {
+			return;
+		}
+
+		this.startTime = Date.now();
+		this.running = true;
+		this.interval = setInterval(() => {
+			this.tick();
+		}, 1000);
+		this.tick();
+	},
+
+	tick() {
+		const timerDisplay = document.getElementById('timer-display');
+
+		if (!timerDisplay) {
+			return;
+		}
+
+		const elapsedSeconds = this.totalSeconds + Math.floor((Date.now() - this.startTime) / 1000);
+		timerDisplay.textContent = this.format(elapsedSeconds);
+		timerDisplay.classList.add('running');
+		timerDisplay.classList.remove('stopped');
+	},
+
+	stop() {
+		if (!this.running) {
+			return;
+		}
+
+		const elapsedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
+		this.totalSeconds += elapsedSeconds;
+		clearInterval(this.interval);
+		this.interval = null;
+		this.startTime = null;
+		this.running = false;
+		this.updateDisplay();
+	},
+
+	reset() {
+		clearInterval(this.interval);
+		this.startTime = null;
+		this.running = false;
+		this.totalSeconds = 0;
+		this.interval = null;
+		this.updateDisplay();
+	},
+
+	format(seconds) {
+		const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
+		const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+		const remainingSeconds = String(seconds % 60).padStart(2, '0');
+		return `${hours}:${minutes}:${remainingSeconds}`;
+	},
+
+	updateDisplay() {
+		const timerDisplay = document.getElementById('timer-display');
+
+		if (!timerDisplay) {
+			return;
+		}
+
+		const elapsedSeconds = this.running
+			? this.totalSeconds + Math.floor((Date.now() - this.startTime) / 1000)
+			: this.totalSeconds;
+
+		timerDisplay.textContent = this.format(elapsedSeconds);
+		timerDisplay.classList.toggle('running', this.running);
+		timerDisplay.classList.toggle('stopped', !this.running);
+	},
+};
+
 function updateBadge() {
 	const badgeElement = document.getElementById('task-count');
 
@@ -133,6 +212,28 @@ function updateBadge() {
 
 const todayDateElement = document.getElementById('today-date');
 
+const timerStartButton = document.getElementById('timer-start-btn');
+const timerStopButton = document.getElementById('timer-stop-btn');
+const timerResetButton = document.getElementById('timer-reset-btn');
+
+if (timerStartButton) {
+	timerStartButton.addEventListener('click', () => {
+		Timer.start();
+	});
+}
+
+if (timerStopButton) {
+	timerStopButton.addEventListener('click', () => {
+		Timer.stop();
+	});
+}
+
+if (timerResetButton) {
+	timerResetButton.addEventListener('click', () => {
+		Timer.reset();
+	});
+}
+
 if (todayDateElement) {
 	todayDateElement.textContent = new Date().toLocaleDateString(undefined, {
 		weekday: 'long',
@@ -142,6 +243,7 @@ if (todayDateElement) {
 	});
 }
 
+Timer.updateDisplay();
 TaskUI.bindEvents();
 TaskUI.render();
 
