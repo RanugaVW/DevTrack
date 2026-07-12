@@ -9,6 +9,36 @@ const TaskManager = {
 			createdAt: new Date().toISOString(),
 		};
 
+
+	const ExportManager = {
+		toCSV() {
+			const headers = 'id,text,done,createdAt';
+			const rows = TaskManager.getAll().map((task) => {
+				const text = `"${String(task.text).replace(/"/g, '""')}"`;
+				const createdAt = `"${String(task.createdAt).replace(/"/g, '""')}"`;
+				return [task.id, text, task.done, createdAt].join(',');
+			});
+
+			return [headers, ...rows].join('\n');
+		},
+
+		download(name, content) {
+			const blob = new Blob([content], { type: 'text/csv;charset=utf-8' });
+			const url = URL.createObjectURL(blob);
+			const link = document.createElement('a');
+
+			link.href = url;
+			link.download = name;
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+			URL.revokeObjectURL(url);
+		},
+
+		exportTasks() {
+			this.download('tasks.csv', this.toCSV());
+		},
+	};
 		this.tasks.push(task);
 		this.save();
 		return task;
@@ -219,6 +249,14 @@ function updateBadge() {
 }
 
 const todayDateElement = document.getElementById('today-date');
+
+const exportCsvButton = document.getElementById('export-csv-btn');
+
+if (exportCsvButton) {
+	exportCsvButton.addEventListener('click', () => {
+		ExportManager.exportTasks();
+	});
+}
 
 const timerStartButton = document.getElementById('timer-start-btn');
 const timerStopButton = document.getElementById('timer-stop-btn');
