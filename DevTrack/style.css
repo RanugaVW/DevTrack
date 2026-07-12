@@ -172,13 +172,13 @@ body {
 	padding: 0.8rem 1rem;
 	font: inherit;
 	cursor: pointer;
-	background: rgba(15, 23, 42, 0.45);
+	background: rgba(3, 255, 247, 0.593);
 	color: var(--text);
 	transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .timer-controls button:hover {
-	background: rgba(255, 5, 1, 0.699);
+	background: rgba(0, 217, 255, 0.912);
 	color: var(--accent);
 }
 
