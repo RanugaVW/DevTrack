@@ -125,6 +125,7 @@ const Timer = {
 	running: false,
 	totalSeconds: 0,
 	interval: null,
+	sessions: 0,
 
 	start() {
 		if (this.running) {
@@ -146,8 +147,8 @@ const Timer = {
 			return;
 		}
 
-		const elapsedSeconds = this.totalSeconds + Math.floor((Date.now() - this.startTime) / 1000);
-		timerDisplay.textContent = this.format(elapsedSeconds);
+		const elapsedMilliseconds = this.totalSeconds * 1000 + (Date.now() - this.startTime);
+		timerDisplay.textContent = this.format(elapsedMilliseconds);
 		timerDisplay.classList.add('running');
 		timerDisplay.classList.remove('stopped');
 	},
@@ -159,11 +160,17 @@ const Timer = {
 
 		const elapsedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
 		this.totalSeconds += elapsedSeconds;
+		this.sessions = 0;
 		clearInterval(this.interval);
 		this.interval = null;
 		this.startTime = null;
 		this.running = false;
 		this.updateDisplay();
+		const sessionCountElement = document.getElementById('session-count');
+
+		if (sessionCountElement) {
+			sessionCountElement.textContent = `Sessions today: ${this.sessions}`;
+		}
 	},
 
 	reset() {
@@ -175,7 +182,8 @@ const Timer = {
 		this.updateDisplay();
 	},
 
-	format(seconds) {
+	format(milliseconds) {
+		const seconds = Math.floor(milliseconds / 100);
 		const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
 		const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
 		const remainingSeconds = String(seconds % 60).padStart(2, '0');
@@ -189,11 +197,11 @@ const Timer = {
 			return;
 		}
 
-		const elapsedSeconds = this.running
-			? this.totalSeconds + Math.floor((Date.now() - this.startTime) / 1000)
-			: this.totalSeconds;
+		const elapsedMilliseconds = this.running
+			? this.totalSeconds * 1000 + (Date.now() - this.startTime)
+			: this.totalSeconds * 1000;
 
-		timerDisplay.textContent = this.format(elapsedSeconds);
+		timerDisplay.textContent = this.format(elapsedMilliseconds);
 		timerDisplay.classList.toggle('running', this.running);
 		timerDisplay.classList.toggle('stopped', !this.running);
 	},
