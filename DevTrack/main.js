@@ -160,7 +160,7 @@ const Timer = {
 
 		const elapsedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
 		this.totalSeconds += elapsedSeconds;
-		this.sessions = 0;
+		this.sessions = +1;
 		clearInterval(this.interval);
 		this.interval = null;
 		this.startTime = null;
@@ -183,7 +183,7 @@ const Timer = {
 	},
 
 	format(milliseconds) {
-		const seconds = Math.floor(milliseconds / 100);
+		const seconds = Math.floor(milliseconds / 1000);
 		const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
 		const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
 		const remainingSeconds = String(seconds % 60).padStart(2, '0');
