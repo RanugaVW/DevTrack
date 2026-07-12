@@ -83,6 +83,8 @@ const TaskUI = {
 			listItem.append(checkbox, text, deleteButton);
 			this.listElement.appendChild(listItem);
 		});
+
+		updateBadge();
 	},
 
 	addTaskFromInput() {
@@ -117,6 +119,17 @@ const TaskUI = {
 		}
 	},
 };
+
+function updateBadge() {
+	const badgeElement = document.getElementById('task-count');
+
+	if (!badgeElement) {
+		return;
+	}
+
+	const remainingTasks = TaskManager.getAll().filter((task) => task.done === false).length;
+	badgeElement.textContent = remainingTasks === 0 ? 'All done!' : `${remainingTasks} tasks remaining`;
+}
 
 const todayDateElement = document.getElementById('today-date');
 
