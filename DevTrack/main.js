@@ -64,6 +64,9 @@ const ThemeManager = {
 		}
 
 		this.buttonElement.innerHTML = this.theme === 'light' ? '&#9728;&#65039;' : '&#127769;';
+ 	},
+};
+
 const StatsManager = {
 	sectionElement: document.getElementById('stats-section'),
 	tasksDoneElement: document.getElementById('tasks-done'),
@@ -326,4 +329,3 @@ StatsManager.refresh();
 Timer.updateDisplay();
 TaskUI.bindEvents();
 TaskUI.render();
-	}}
