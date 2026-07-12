@@ -11,6 +11,7 @@ const TaskManager = {
 
 		this.tasks.push(task);
 		this.save();
+		StatsManager.refresh();
 		return task;
 	},
 
@@ -20,6 +21,7 @@ const TaskManager = {
 		if (task) {
 			task.done = !task.done;
 			this.save();
+			StatsManager.refresh();
 		}
 
 		return task;
@@ -28,6 +30,7 @@ const TaskManager = {
 	delete(id) {
 		this.tasks = this.tasks.filter((task) => task.id !== id);
 		this.save();
+		StatsManager.refresh();
 	},
 
 	save() {
@@ -36,6 +39,42 @@ const TaskManager = {
 
 	getAll() {
 		return this.tasks;
+	},
+};
+
+const StatsManager = {
+	sectionElement: document.getElementById('stats-section'),
+	tasksDoneElement: document.getElementById('tasks-done'),
+	tasksRemainingElement: document.getElementById('tasks-remaining'),
+	completionRateElement: document.getElementById('completion-rate'),
+	focusMinutesElement: document.getElementById('focus-minutes'),
+
+	refresh() {
+		if (!this.sectionElement) {
+			return;
+		}
+
+		const tasks = TaskManager.getAll();
+		const tasksCompleted = tasks.filter((task) => task.done === true).length;
+		const tasksRemaining = tasks.filter((task) => task.done === false).length;
+		const completionRate = tasks.length === 0 ? 0 : Math.round((tasksCompleted / tasks.length) * 100);
+		const focusMinutes = Math.floor(Timer.totalSeconds / 60);
+
+		if (this.tasksDoneElement) {
+			this.tasksDoneElement.textContent = tasksCompleted;
+		}
+
+		if (this.tasksRemainingElement) {
+			this.tasksRemainingElement.textContent = tasksRemaining;
+		}
+
+		if (this.completionRateElement) {
+			this.completionRateElement.textContent = completionRate;
+		}
+
+		if (this.focusMinutesElement) {
+			this.focusMinutesElement.textContent = focusMinutes;
+		}
 	},
 };
 
@@ -171,6 +210,7 @@ const Timer = {
 		if (sessionCountElement) {
 			sessionCountElement.textContent = `Sessions today: ${this.sessions}`;
 		}
+		StatsManager.refresh();
 	},
 
 	reset() {
@@ -251,6 +291,7 @@ if (todayDateElement) {
 	});
 }
 
+StatsManager.refresh();
 Timer.updateDisplay();
 TaskUI.bindEvents();
 TaskUI.render();
