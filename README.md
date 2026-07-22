@@ -12,6 +12,15 @@ DevTrack - A personal developer productivity dashboard to manage tasks, track ti
 ## How to Run
 Open index.html in any modern browser. No build step needed.
 
+## Folder Structure
+```text
+DevTrack/
+├── index.html
+├── main.js
+├── README.md
+└── style.css
+```
+
 ## Contributing
 - 531f9c6 (HEAD -> master) feat: export feature merged
 - 28627e4 fix: buttons not working
@@ -32,3 +41,5 @@ Open index.html in any modern browser. No build step needed.
 - 1997ec4 another temp file file1.txt
 - 836fe3c Temp file created
 - 73c8c75 Initial commit with the folder structure
+
+
