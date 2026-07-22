@@ -100,7 +100,7 @@ const ThemeManager = {
 const Timer = {
 	startTime: null,
 	running: false,
-	totalSeconds: 0,
+	totalSeconds: parseInt(localStorage.getItem('devtrack-timer') || '0'),
 	interval: null,
 	sessions: 0,
 
@@ -137,6 +137,7 @@ const Timer = {
 
 		const elapsedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
 		this.totalSeconds += elapsedSeconds;
+		localStorage.setItem('devtrack-timer', this.totalSeconds);
 		this.sessions += 1;
 		clearInterval(this.interval);
 		this.interval = null;
@@ -160,6 +161,25 @@ const Timer = {
 		this.totalSeconds = 0;
 		this.interval = null;
 		this.updateDisplay();
+	},
+
+	resetDay() {
+		clearInterval(this.interval);
+		this.startTime = null;
+		this.running = false;
+		this.totalSeconds = 0;
+		this.sessions = 0;
+		this.interval = null;
+		localStorage.removeItem('devtrack-timer');
+		this.updateDisplay();
+
+		const sessionCountElement = document.getElementById('session-count');
+
+		if (sessionCountElement) {
+			sessionCountElement.textContent = 'Sessions today: 0';
+		}
+
+		StatsManager.refresh();
 	},
 
 	format(milliseconds) {
@@ -321,6 +341,7 @@ const exportCsvButton = document.getElementById('export-csv-btn');
 const timerStartButton = document.getElementById('timer-start-btn');
 const timerStopButton = document.getElementById('timer-stop-btn');
 const timerResetButton = document.getElementById('timer-reset-btn');
+const timerResetDayButton = document.getElementById('timer-reset-day-btn');
 
 if (themeButton) {
 	themeButton.addEventListener('click', () => {
@@ -349,6 +370,12 @@ if (timerStopButton) {
 if (timerResetButton) {
 	timerResetButton.addEventListener('click', () => {
 		Timer.reset();
+	});
+}
+
+if (timerResetDayButton) {
+	timerResetDayButton.addEventListener('click', () => {
+		Timer.resetDay();
 	});
 }
 
