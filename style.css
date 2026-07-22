@@ -262,7 +262,7 @@ body.light-mode .task-item {
 }
 
 body.light-mode .timer-controls button {
-	background: rgba(2, 132, 199, 0.12);
+	background: rgba(246, 255, 0, 0.12);
 }
 
 .timer-controls button:hover {
